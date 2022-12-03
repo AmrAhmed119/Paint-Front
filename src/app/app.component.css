@@ -1,0 +1,43 @@
+
+.circ {
+    margin-left: 40px;
+    background-color: rgb(162, 173, 187);
+    width: 50px;
+    height: 50px;
+    border: 2px rgb(46, 44, 44) solid;
+    border-radius: 10px;
+    position: relative;
+}
+
+.rect {
+    margin-left: 30px;
+    background-color: rgb(162, 173, 187);
+    width: 50px;
+    height: 50px;
+    border: 2px rgb(46, 44, 44) solid;
+    border-radius: 10px;
+    position: relative;
+
+}
+
+.squa {
+    margin-left: 40px;
+    background-color: rgb(162, 173, 187);
+    width: 50px;
+    height: 50px;
+    border: 2px rgb(46, 44, 44) solid;
+    border-radius: 10px;
+    position: relative;
+
+}
+
+.poly {
+    margin-left: 60px;
+    background-color: rgb(162, 173, 187);
+    width: 50px;
+    height: 50px;
+    border: 2px rgb(46, 44, 44) solid;
+    border-radius: 10px;
+    position: relative;
+
+}
