@@ -13,7 +13,7 @@ export class ExpressionService {
 
   constructor(private http:HttpClient) { }
 
-  public calcExpression(data : string) : Observable<any> {
+  public saveShape(data : string) : Observable<any> {
     return this.http.post<any>(this.shapeURL,data);
   }
 

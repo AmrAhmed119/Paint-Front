@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {KonvaModule} from "ng2-konva";
 import {KonvaComponent} from "ng2-konva";
 import { Konva } from "konva/cmj/_FullInternals";
+import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,10 @@ export class AppComponent implements OnInit{
   title = 'Paint';
   layer : any;
   stage : any;
+  cnt = 1;
+  num = "1";
+  color = "red";
+  shape : any;
 
   ngOnInit(): void {
     var width = 500;
@@ -24,9 +29,17 @@ export class AppComponent implements OnInit{
     });
     this.layer = new Konva.Layer();
     this.stage.add(this.layer);
-    throw new Error('Method not implemented.');
   }
   
+  public clear() {
+
+    this.shape = this.stage.findOne('#2');
+
+    this.shape.destroy();
+
+    console.log(this.shape);
+
+  }
 
   public rect() {
 
@@ -35,13 +48,19 @@ export class AppComponent implements OnInit{
     y : 50,
     width: 100,
     height: 50,
-    fill: 'green',
+    fill: this.color,
     stroke: 'black',
     strokeWidth: 5,
     draggable: true,
+    id: this.num
     });
+    this.color = "green";
+    this.cnt++;
+    this.num =this.cnt.toString();
     this.layer.add(recta);
-  }
+    console.log(this.cnt);
+
+}
 
   circle() {
 
