@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ShapeServiceService } from './shape-service.service';
+import { ShapeService } from './shape-service.service';
 
-describe('ShapeServiceService', () => {
-  let service: ShapeServiceService;
+describe('ShapeService', () => {
+  let service: ShapeService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ShapeServiceService);
+    service = TestBed.inject(ShapeService);
   });
 
   it('should be created', () => {

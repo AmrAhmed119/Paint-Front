@@ -1,11 +1,17 @@
 <div class="board" id="board"></div>
-<div class="buttons">
-    <div class="shapes">Shapes</div>
-    <button (click)="rect()" class="rect"> ▭</button>
-    <button (click)="circle()" class="circ"> ○</button>
-    <button (click)="square()" class="squa"> □</button>
-    <button (click)="polygon()" class="poly"> ⬠</button>
-    <button (click)="clear()" class="clear"> c</button>
+<div class="options">
+    <div class="shapesParent">
+        <div class="shapes">
+            <button (click)="drawRectangle()" class="rect"> ▭</button>
+            <button (click)="drawCircle()" class="circ"> ○</button>
+            <button (click)="drawSquare()" class="squa"> □</button>
+            <button (click)="polygon()" class="poly"> ⬠</button>
+            <button (click)="drawEllipse()" class="ellipse"> e</button>
+            <button (click)="drawTriangle()" class="triangle"> t</button>
+            <button (click)="drawLine()" class="line"> l</button>
+            <button (click)="freeHand()" class="free"> f</button>
+        </div>
+    </div>
 </div>
 
 

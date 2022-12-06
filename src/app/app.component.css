@@ -7,21 +7,30 @@
     position: absolute;
 }
 
-.buttons {
-    word-wrap: break-word;
+.options {
     margin-top: 70px;
     margin-left: 1150px;
     width: 200px;
     height: 500px;
     border: 2px solid red;
     position: absolute;
+    border-radius: 20px;
 }
 
-.shapes {
+/* .shapes {
     padding-top: 100px;
     font-size: 23px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     padding-left: 10px;
+    position: absolute;
+} */
+
+.shapesParent {
+    margin-top: 0px;
+    width: 200px;
+    height: 150px;
+    background-color: beige;
+    position: absolute;
 }
 
 .circ {
@@ -64,7 +73,7 @@
     position: relative;
 }
 
-.clear {
+.ellipse {
     font-size: 30px;
     background-color: rgb(255, 255, 255);
     width: 40px;
@@ -72,10 +81,37 @@
     border: 2px rgb(255, 255, 255) solid;
     border-radius: 10px;
     position: relative;
-
 }
 
+.triangle {
+    font-size: 30px;
+    background-color: rgb(255, 255, 255);
+    width: 40px;
+    height: 40px;
+    border: 2px rgb(255, 255, 255) solid;
+    border-radius: 10px;
+    position: relative;
+}
 
+.line {
+    font-size: 30px;
+    background-color: rgb(255, 255, 255);
+    width: 40px;
+    height: 40px;
+    border: 2px rgb(255, 255, 255) solid;
+    border-radius: 10px;
+    position: relative;
+}
+
+.free {
+    font-size: 30px;
+    background-color: rgb(255, 255, 255);
+    width: 40px;
+    height: 40px;
+    border: 2px rgb(255, 255, 255) solid;
+    border-radius: 10px;
+    position: relative;
+}
 
 .rect:hover{
     background-color: rgb(181, 192, 192);
@@ -89,7 +125,16 @@
 .poly:hover{
     background-color: rgb(181, 192, 192);
 }
-.clear:hover{
+.ellipse:hover{
+    background-color: rgb(181, 192, 192);
+}
+.triangle:hover{
+    background-color: rgb(181, 192, 192);
+}
+.line:hover{
+    background-color: rgb(181, 192, 192);
+}
+.free:hover{
     background-color: rgb(181, 192, 192);
 }
 

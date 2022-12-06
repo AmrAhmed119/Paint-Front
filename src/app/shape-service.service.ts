@@ -6,16 +6,17 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 
-export class ExpressionService {
+export class ShapeService {
 
-  private shapeURL = 'http://localhost:9090/shape';
-
+  private shapeURL = 'http://localhost:8080/';
 
   constructor(private http:HttpClient) { }
 
-  public saveShape(data : string) : Observable<any> {
-    return this.http.post<any>(this.shapeURL,data);
+  public saveShape(data : any) : Observable<any> {
+    return this.http.post<any>(this.shapeURL + "POSTShape", data);
   }
 
-
+  public getShapes() : Observable<any> {
+    return this.http.get<any>(this.shapeURL + "GETDataBase");
+  }
 }
