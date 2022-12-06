@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import {KonvaModule} from "ng2-konva";
 import {KonvaComponent} from "ng2-konva";
 import { Konva } from "konva/cmj/_FullInternals";
-import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -20,10 +19,10 @@ export class AppComponent implements OnInit{
   shape : any;
 
   ngOnInit(): void {
-    var width = 500;
+    var width = 1000;
     var height = 500;
     this.stage = new Konva.Stage({
-    container: 'container',
+    container: 'board',
     width: width,
     height: height,
     });
@@ -74,6 +73,7 @@ export class AppComponent implements OnInit{
       draggable: true,
     });
     this.layer.add(ccircle);
+    
   }
 
   square() {
