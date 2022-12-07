@@ -33,8 +33,10 @@ export class AppComponent implements OnInit{
 
   }
 
-  public generateID(shape : any){
-    const convertJson = JSON.parse(shape.toJSON());
+  // Request function
+  public postGenerateID(shape : any, shapeType : string){
+    let convertJson = JSON.parse(shape.toJSON());
+    convertJson['type'] = shapeType;
     this.service.saveShape(convertJson).subscribe((responseData) => {
       shape.id('#'.concat(responseData));
       }
@@ -63,6 +65,7 @@ export class AppComponent implements OnInit{
       rectangle.height(0);
       rectangle.fill("white");
       rectangle.stroke("grey");
+      rectangle.strokeWidth(2);
       this.layer.add(rectangle).batchDraw();
       console.log("after");
       console.log(rectangle);
@@ -80,7 +83,7 @@ export class AppComponent implements OnInit{
     this.stage.on("mouseup",()=>{
       isNowDrawing=false;
       console.log(rectangle.width());
-      this.generateID(rectangle);
+      this.postGenerateID(rectangle,"Rectangle");
       console.log(rectangle.id());
     });
 
@@ -115,12 +118,13 @@ export class AppComponent implements OnInit{
         const rise = Math.pow(pos.y - circle.y(), 2);
         const run = Math.pow(pos.x - circle.x(), 2);
         const newRadius = Math.sqrt(rise * run);
-        circle.radius(newRadius/100);
+        circle.radius(newRadius/300);
         this.layer.batchDraw();
       }
     });
 
     this.stage.on("mouseup",()=>{
+      this.postGenerateID(circle,"Circle");
       isNowDrawing=false;
     });
 
@@ -152,13 +156,14 @@ export class AppComponent implements OnInit{
     this.stage.on("mousemove",()=>{
       if(isNowDrawing) {
         let pos = this.stage.getPointerPosition();
-        ellipse.radiusX(pos.x - ellipse.x());
-        ellipse.radiusY(pos.y - ellipse.y());
+        ellipse.radiusX(Math.abs(pos.x - ellipse.x()));
+        ellipse.radiusY(Math.abs(pos.y - ellipse.y()));
         this.layer.batchDraw();
       }
     });
 
     this.stage.on("mouseup",()=>{
+      this.postGenerateID(ellipse,"Ellipse");
       isNowDrawing=false;
     });
 
@@ -198,6 +203,7 @@ export class AppComponent implements OnInit{
     });
 
     this.stage.on("mouseup",()=>{
+      this.postGenerateID(square,"Square");
       isNowDrawing=false;
     });
 
@@ -236,6 +242,7 @@ export class AppComponent implements OnInit{
     });
 
     this.stage.on("mouseup",()=>{
+      this.postGenerateID(triangle,"Triangle");
       isNowDrawing=false;
     });
 
@@ -274,6 +281,7 @@ export class AppComponent implements OnInit{
     });
 
     this.stage.on("mouseup",()=>{
+      this.postGenerateID(line,"LineSegment");
       isNowDrawing=false;
     });
 
@@ -313,22 +321,50 @@ export class AppComponent implements OnInit{
     });
 
     this.stage.on("mouseup",()=>{
+      this.postGenerateID(line,"LineSegment");
       isNowDrawing=false;
     });
 
   }
 
-  polygon() {
-    var hexagon = new Konva.RegularPolygon({
-      x: 100,
-      y: 150,
-      sides: 6,
-      radius: 70,
-      fill: 'blue',
-      stroke: 'black',
-      draggable: true,
-      strokeWidth: 4,
+  // draw polygon
+  public drawPolygon() {
+
+    this.stage.off('mousedown');
+    this.stage.off('mouseup');
+    this.stage.off('mousemove');
+
+    let polygon : any;
+    let isNowDrawing = false;
+
+    this.stage.on("mousedown",()=>{
+      polygon = new Konva.RegularPolygon();
+      isNowDrawing = true;
+      let pos = this.stage.getPointerPosition();
+      polygon.x(pos.x);
+      polygon.y(pos.y);
+      polygon.sides(5);
+      polygon.radius(0);
+      polygon.fill("white");
+      polygon.stroke("grey");
+      this.layer.add(polygon).batchDraw();
     });
-    this.layer.add(hexagon);
+
+    this.stage.on("mousemove",()=>{
+      if(isNowDrawing) {
+        let pos = this.stage.getPointerPosition();
+        polygon.width(pos.x - polygon.x());
+        polygon.height(pos.y - polygon.y());
+        this.layer.batchDraw();
+      }
+    });
+
+    this.stage.on("mouseup",()=>{
+      this.postGenerateID(polygon,"RegularPolygon");
+      isNowDrawing=false;
+    });
+
   }
+
+
 }

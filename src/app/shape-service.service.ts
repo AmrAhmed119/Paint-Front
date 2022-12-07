@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 
 export class ShapeService {
 
-  private shapeURL = 'http://localhost:8080/';
+  private shapeURL = 'http://localhost:8080/api/';
 
   constructor(private http:HttpClient) { }
 
