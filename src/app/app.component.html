@@ -2,14 +2,14 @@
 <div class="options">
     <div class="shapes">
         <p class="text">Shapes</p>
-        <button (click)="drawRectangle()" class="rect"> ▭</button>
-        <button (click)="drawCircle()" class="circ"> ○</button>
-        <button (click)="drawSquare()" class="squa"> □</button>
-        <button (click)="drawPolygon()" class="poly"> ⬠</button>
-        <button (click)="drawEllipse()" class="ellipse"> e</button>
-        <button (click)="drawTriangle()" class="triangle"> t</button>
-        <button (click)="drawLine()" class="line"> l</button>
-        <button (click)="freeHand()" class="free"> f</button>
+        <button (click)="drawShape($event)" class="rectangle">▭</button>
+        <button (click)="drawShape($event)" class="circle">◯</button>
+        <button (click)="drawShape($event)" class="square">⬜</button>
+        <button (click)="drawShape($event)" class="polygon">⬠</button>
+        <button (click)="drawShape($event)" class="ellipse">⬭</button>
+        <button (click)="drawShape($event)" class="triangle">△</button>
+        <button (click)="drawLine($event)" class="line">╱</button>
+        <button (click)="freeHand($event)" class="freeHand">🖍</button>
     </div>
 </div>
 
