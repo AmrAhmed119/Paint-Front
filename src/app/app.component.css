@@ -23,7 +23,48 @@
     height: 205px;
     width: 280px;
     border-radius: 20px;
-    position: absolute;
+}
+
+.colors {
+    background-color: rgba(28, 47, 64, 0.318);
+    margin-left: 10px;
+    height: 205px;
+    width: 280px;
+    border-radius: 20px;
+}
+
+.head {
+    font-size: 23px;
+    margin: 0;
+    padding-left: 10px;
+    padding-right: 30px;
+    font-family: Tahoma;
+    float: left;
+}
+
+.aligncolor {
+    width: 60px;
+    height: 30px;
+    margin-top: 1px;
+    margin-left: 1px;
+    border-radius: 5px;
+    vertical-align: top;
+}
+
+.fill{
+    background-color: rgb(255, 255, 255);
+    font-size: 25px;
+    width: 40px;
+    height: 40px;
+    border: 2px rgb(255, 255, 255) solid;
+    border-radius: 10px;
+    margin-left: 10px;
+    vertical-align: top;
+}
+
+.size {
+    margin-top: 10px;
+    margin-left: 20px;
 }
 
 .text {

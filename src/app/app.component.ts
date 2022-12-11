@@ -14,12 +14,14 @@ import { ShapeService } from './shape-service.service';
 
 export class AppComponent implements OnInit{
 
-  title = 'Paint';
   layer : any;
   stage : any;
   transfom : any;
   currentSelector = "screen";
   lastEvent : any;
+  colorEvent : any;
+  color : string = "black";
+  size = 5;
 
   constructor(private service : ShapeService) {}
 
@@ -41,47 +43,80 @@ export class AppComponent implements OnInit{
       if(this.currentSelector !== "screen") {
         return;
       }
-      console.log("click triggered");
-      this.stage.off('mousedown');
-      this.stage.off('mouseup');
-      this.stage.off('mousemove');
+      this.layer.getChildren().forEach(function(node:any){
+        node.draggable(false);
+      });
       let id = event.target.attrs.id;
-      console.log("id = ");
-      console.log(id);
+      console.log("click triggered");
+      console.log("id of selected shape = " + id);
       if(id != undefined && id != null){
-        let shape=event.target;
+        let shape = event.target;
         this.transfom.nodes([shape]);
         shape.draggable(true);
-        console.log(shape.draggable());
+
+        shape.on('transformstart', function () {
+          console.log('transform start' + shape);
+        });
+  
+        shape.on('dragmove', function () {
+          console.log("moving shape" + shape);
+        });
+        shape.on('transform', function () {
+          console.log('transform' + shape);
+        });
+  
+        shape.on('transformend', function () {
+          console.log('transform end' + shape);
+
+          /*
+          POST REQUEST -> SHAPE MODIFIED.
+
+          */
+        });
+
+        shape.on('dragend', function () {
+          console.log("drag ended " + shape);
+          /*
+          POST REQUEST -> SHAPE MODIFIED.
+
+          */
+        })
+
       }
       else {
         this.transfom.nodes([]);
+        
       }
     });
     
+  }
+
+  // POST REQUEST SEND AFTER MODIFIED A SHAPE
+  public postModifiedShape() {
 
   }
 
-  // get the shape id (unique) from back-end (request)
+
+  // POST REQUEST SEND AFTER INITIALIZING A SHAPE AND RETURNS UNIQUE ID FOR EACH SHAPE
   public postGenerateID(shape : any, shapeType : string){
     let convertJson = JSON.parse(shape.toJSON());
     convertJson['type'] = shapeType;
     this.service.saveShape(convertJson).subscribe((responseData) => {
-        console.log(responseData);
         shape.id('#'.concat(responseData));
       }
     );
   }
 
-  // draw the selected shape
   public drawShape(event : any) {
 
     this.stage.off('mousedown');
     this.stage.off('mouseup');
     this.stage.off('mousemove');
+    this.transfom.nodes([]);
+
 
     let type = this.getType(event);
-
+    console.log(type);
     if(this.lastEvent != null) {
       this.lastEvent.target.style.background = "#ffffff";
     }
@@ -110,8 +145,8 @@ export class AppComponent implements OnInit{
       shape.fillEnabled(true);
       shape.x(pos.x);
       shape.y(pos.y);
-      shape.stroke("black");
-      shape.strokeWidth(2);
+      shape.stroke(this.color);
+      shape.strokeWidth(this.size);
 
       if(type === "Rectangle" || type === "Square") {
         shape.width(0);
@@ -145,14 +180,16 @@ export class AppComponent implements OnInit{
           shape.height(pos.y - shape.y());
         } 
         else if(type === "Square") {
-          const to = Math.max(pos.x,pos.y);
-          shape.width(to - shape.x());
+          let newX : number = pos.x - shape.x();
+          let newY : number = pos.y - shape.y();
+          let x : number = Math.min(newX,newY);
+          shape.width(x)
           shape.height(shape.width());
         } 
         else if(type === "Circle") {
-          const rise = Math.pow(pos.y - shape.y(), 2);
-          const run = Math.pow(pos.x - shape.x(), 2);
-          const newRadius = Math.sqrt(rise * run);
+          let rise = Math.pow(pos.y - shape.y(), 2);
+          let run = Math.pow(pos.x - shape.x(), 2);
+          let newRadius = Math.sqrt(rise * run);
           shape.radius(newRadius/400);
         } 
         else if(type === "Ellipse") {
@@ -165,19 +202,221 @@ export class AppComponent implements OnInit{
     });
 
     this.stage.on("mouseup",()=>{
-      this.postGenerateID(shape,type);
-      this.transfom.nodes([shape]);
       isNowDrawing=false;
+
+      /*
+      POST REQUEST HERE! -> after drawing a shape and finish drawing it send a post
+      request from the back and get id and set it to the shape.
+      */
+
+      this.postGenerateID(shape,type);
+      console.log("Done initializing " + type);
     });
 
-    console.log(type);
   }
+
+  public freeHand(event : any) {
+
+    this.stage.off('mousedown');
+    this.stage.off('mouseup');
+    this.stage.off('mousemove');
+    this.transfom.nodes([]);
+    console.log(this.color);
+
+    if(this.lastEvent != null) {
+      this.lastEvent.target.style.background = "#ffffff";
+    }
+    this.lastEvent = event;
+
+    let line : any;
+    let isNowDrawing = false;
+
+    if(this.currentSelector != "FreeHand"){
+      this.currentSelector = "FreeHand";
+      event.target.style.background = "#62666846";
+      this.layer.getChildren().forEach(function(node:any){
+        node.draggable(false);
+      });
+    }
+    else {
+      this.currentSelector = "screen";
+      event.target.style.background = "#ffffff";
+      return;
+    }
+    
+    this.stage.on("mousedown",()=>{
+      console.log(this.color);
+      line = new Konva.Line();
+      isNowDrawing = true;
+      let pos = this.stage.getPointerPosition();
+      line.points([pos.x,pos.y]);
+      line.stroke(this.color);
+      line.strokeWidth(this.size);      
+      line.lineCap("round");
+      line.lineJoin("round");
+      this.layer.add(line).batchDraw();
+    });
+
+    this.stage.on("mousemove",()=>{
+      if(isNowDrawing) {
+        let pos = this.stage.getPointerPosition();
+        line.points(line.points().concat([pos.x,pos.y]));
+        line.lineCap("round");
+        line.lineJoin("round");
+        this.layer.batchDraw();
+      }
+    });
+
+    this.stage.on("mouseup",()=>{
+      isNowDrawing=false;
+
+      /*
+      POST REQUEST HERE! -> after drawing a shape and finish drawing it send a post
+      request from the back and get id and set it to the shape.
+      */
+
+      this.postGenerateID(line,"LineSegment");
+      console.log("Done initializing FreeHand");
+    });
+
+  }
+
+  public drawLine(event : any) {
+
+    this.stage.off('mousedown');
+    this.stage.off('mouseup');
+    this.stage.off('mousemove');
+    this.transfom.nodes([]);
+
+    if(this.lastEvent != null) {
+      this.lastEvent.target.style.background = "#ffffff";
+    }
+    this.lastEvent = event;
+
+    let line : any;
+    let isNowDrawing = false;
+
+    if(this.currentSelector != "line"){
+      this.currentSelector = "line";
+      event.target.style.background = "#62666846";
+      this.layer.getChildren().forEach(function(node:any){
+        node.draggable(false);
+      });
+    }
+    else {
+      this.currentSelector = "screen";
+      event.target.style.background = "#ffffff";
+      return;
+    }
+    
+    this.stage.on("mousedown",()=>{
+      line = new Konva.Line();
+      isNowDrawing = true;
+      let pos = this.stage.getPointerPosition();
+      line.points([pos.x,pos.y,pos.x,pos.y]);
+      line.stroke(this.color);
+      line.strokeWidth(this.size);
+      line.lineCap("round");
+      line.lineJoin("round");
+      this.layer.add(line).batchDraw();
+    });
+
+    this.stage.on("mousemove",()=>{
+      if(isNowDrawing) {
+        let pos = this.stage.getPointerPosition();
+        line.points()[2]=pos.x;
+        line.points()[3]=pos.y;
+        line.lineCap("round");
+        line.lineJoin("round");
+        this.layer.batchDraw();
+      }
+    });
+
+    this.stage.on("mouseup",()=>{
+      isNowDrawing=false;
+
+      /*
+      POST REQUEST HERE! -> after drawing a shape and finish drawing it send a post
+      request from the back and get id and set it to the shape.
+      */
+
+      this.postGenerateID(line,"LineSegment");
+      console.log("Done initialzing Line")
+    });
+
+  }
+
+  public fill(event:any){
+    const btn = document.getElementById('in');
+    if(this.colorEvent != null) {
+      console.log(this.lastEvent);
+      this.colorEvent.target.style.opacity=1;
+    }
+    this.colorEvent = event;
+    if(this.color !== event.target.style.background){
+      this.color = event.target.style.background.toString();
+      if(btn !== null) {
+        btn.style.color = this.color;
+      }
+      event.target.style.opacity = 0.5;
+      this.layer.getChildren().forEach(function(node:any){
+        node.draggable(false);
+      });
+    }
+    else {
+      this.color="black";
+      event.target.style.opacity=1;
+      return;
+    }
+    console.log(this.color);
+
+  }
+
+  public fillshape(){
+    this.stage.off('mousedown mouseup mousemove');
+    this.stage.on("mousedown",(event:any)=>{
+        event.target.fill(this.color);
+    })
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   //get type
   public getType(event : any) {
     let shape = event.srcElement.innerText;
     let type : any;
-
+    console.log(shape);
     switch (shape) {
       case "▭":
           type = "Rectangle";
@@ -227,133 +466,6 @@ export class AppComponent implements OnInit{
     return choosenShape;
   }
 
-  // free hand
-  public freeHand(event : any) {
-
-    this.stage.off('mousedown');
-    this.stage.off('mouseup');
-    this.stage.off('mousemove');
-
-    if(this.lastEvent != null) {
-      console.log(this.lastEvent)
-      this.lastEvent.target.style.background = "#ffffff";
-    }
-    this.lastEvent = event;
-
-    let line : any;
-    let isNowDrawing = false;
-
-    if(this.currentSelector != "FreeHand"){
-      this.currentSelector = "FreeHand";
-      event.target.style.background = "#62666846";
-      this.layer.getChildren().forEach(function(node:any){
-        node.draggable(false);
-      });
-    }
-    else {
-      this.currentSelector = "screen";
-      event.target.style.background = "#ffffff";
-      return;
-    }
-    
-    this.stage.on("mousedown",()=>{
-      line = new Konva.Line();
-      isNowDrawing = true;
-      let pos = this.stage.getPointerPosition();
-      line.points([pos.x,pos.y]);
-      line.stroke("black");
-      line.strokeWidth(5);
-      line.lineCap("round");
-      line.lineJoin("round");
-      this.layer.add(line).batchDraw();
-    });
-
-    this.stage.on("mousemove",()=>{
-      if(isNowDrawing) {
-        let pos = this.stage.getPointerPosition();
-        line.points(line.points().concat([pos.x,pos.y]));
-        line.lineCap("round");
-        line.lineJoin("round");
-        this.layer.batchDraw();
-      }
-    });
-
-    this.stage.on("mouseup",()=>{
-      this.postGenerateID(line,"LineSegment");
-      this.transfom.nodes([line]);
-      alert(this.transfom);
-      this.stage.draw();
-      isNowDrawing=false;
-      this.stage.off('mousedown');
-      this.stage.off('mouseup');
-      this.stage.off('mousemove');
-      console.log(line.points())
-    });
-
-  }
-
-  // draw line
-  public drawLine(event : any) {
-
-    this.stage.off('mousedown');
-    this.stage.off('mouseup');
-    this.stage.off('mousemove');
-
-    if(this.lastEvent != null) {
-      console.log(this.lastEvent)
-      this.lastEvent.target.style.background = "#ffffff";
-    }
-    this.lastEvent = event;
-
-    let line : any;
-    let isNowDrawing = false;
-
-    if(this.currentSelector != "line"){
-      this.currentSelector = "line";
-      event.target.style.background = "#62666846";
-      this.layer.getChildren().forEach(function(node:any){
-        node.draggable(false);
-      });
-    }
-    else {
-      this.currentSelector = "screen";
-      event.target.style.background = "#ffffff";
-      return;
-    }
-    
-    this.stage.on("mousedown",()=>{
-      line = new Konva.Line();
-      isNowDrawing = true;
-      let pos = this.stage.getPointerPosition();
-      line.points([pos.x,pos.y,pos.x,pos.y]);
-      line.stroke("black");
-      line.strokeWidth(5);
-      line.lineCap("round");
-      line.lineJoin("round");
-      this.layer.add(line).batchDraw();
-    });
-
-    this.stage.on("mousemove",()=>{
-      if(isNowDrawing) {
-        let pos = this.stage.getPointerPosition();
-        line.points()[2]=pos.x;
-        line.points()[3]=pos.y;
-        line.lineCap("round");
-        line.lineJoin("round");
-        this.layer.batchDraw();
-      }
-    });
-
-    this.stage.on("mouseup",()=>{
-      this.postGenerateID(line,"LineSegment");
-      isNowDrawing=false;
-    });
-
-  }
-
-  public select(event : any) {
-
-  }
 
 
 
@@ -363,29 +475,7 @@ export class AppComponent implements OnInit{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
 
 /*
   // draw Rectangle
