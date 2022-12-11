@@ -27,8 +27,8 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
 
-    let width = 1100;
-    let height = 600;
+    let width = 1210;
+    let height = 700;
     this.stage = new Konva.Stage({
       container: 'board',
       width: width,
@@ -95,7 +95,6 @@ export class AppComponent implements OnInit{
   public postModifiedShape() {
 
   }
-
 
   // POST REQUEST SEND AFTER INITIALIZING A SHAPE AND RETURNS UNIQUE ID FOR EACH SHAPE
   public postGenerateID(shape : any, shapeType : string){
@@ -379,10 +378,64 @@ export class AppComponent implements OnInit{
     })
   }
 
+  public changeState(event : any) {
+    if(this.lastEvent != null) {
+      this.lastEvent.target.style.background = "#ffffff";
+    }
+    this.lastEvent = event;
+
+
+    if(this.currentSelector != "edit"){
+      this.currentSelector = "edit";
+      event.target.style.background = "#62666846";
+      this.layer.getChildren().forEach(function(node:any){
+        node.draggable(false);
+      });
+    }
+    else {
+      this.currentSelector = "screen";
+      event.target.style.background = "#ffffff";
+      return;
+    }
+  } 
+
+  
+  public copy(event : any) {
+      this.changeState(event);
 
 
 
+  }
 
+  public delete(event : any) {
+    this.changeState(event);
+
+
+  }
+
+  public undo(event : any) {
+    this.changeState(event);
+
+
+  }
+
+  public redo(event : any) {
+    this.changeState(event);
+
+
+  }
+
+  public save(event : any) {
+    this.changeState(event);
+
+
+  }
+
+  public load(event : any) {
+    this.changeState(event);
+
+
+  }
 
 
 

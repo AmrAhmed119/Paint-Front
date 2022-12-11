@@ -1,38 +1,165 @@
 .board {
-    margin-left: 2.5%;
-    margin-top: 3.5%;
+    margin-left: 1%;
+    margin-top: 0.5%;
     border: 2px solid rgba(31, 48, 65, 0.69);
     border-radius: 20px;
     position: absolute;
 }
 
 .options {
-    margin-top: 3.5%;
-    margin-left: 77%;
-    width: 300px;
-    height: 600px;
+    margin-top: 0.5%;
+    margin-left: 82%;
+    width: 250px;
+    height: 700px;
     border: 2px solid rgba(31, 48, 65, 0.69);
     position: absolute;
+    display:inline-block;
     border-radius: 20px;
 }
 
 .shapes {
     background-color: rgba(28, 47, 64, 0.318);
     margin-left: 10px;
-    margin-top: 10px;
-    height: 205px;
-    width: 280px;
+    height: 180px;
+    width: 230px;
     border-radius: 20px;
 }
 
 .colors {
     background-color: rgba(28, 47, 64, 0.318);
     margin-left: 10px;
-    height: 205px;
-    width: 280px;
+    height: 220px;
+    width: 230px;
     border-radius: 20px;
 }
 
+.operations {
+    background-color: rgba(28, 47, 64, 0.318);
+    margin-left: 10px;
+    margin-top: 8px;
+    height: 190px;
+    width: 230px;
+    border-radius: 20px;    
+}
+
+.clearOperation {
+    text-align: center;
+}
+
+.clear {
+    background-color: rgba(28, 47, 64, 0.318);
+    margin-left: 0px;
+    margin-top: 8px;
+    font-size: 30px;
+    height: 50px;
+    width: 220px;
+    border: none;
+    border-radius: 20px; 
+}
+
+.title {
+    color: rgb(22, 41, 57);
+    padding-left: 15px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    font-size: 35px;
+    font-family: Tahoma;
+    position: relative;
+}
+
+.buttonShapes {
+    margin-top: 10px;
+    height: 115px;
+}
+
+.button {
+    background-color: rgb(255, 255, 255);
+    font-size: 30px;
+    width: 45px;
+    height: 45px;
+    margin-left: 4%;
+    margin-top: 5%;
+    vertical-align: top;
+    border: 2px rgb(255, 255, 255) solid;
+    border-radius: 10px;
+    position: relative;
+}
+
+.square {
+    font-size: 20px;
+}
+
+.button:hover {
+    transform:scale(1.2,1.2);
+    -webkit-transform:scale(1.2,1.2);
+    -moz-transform:scale(1.2,1.2);
+}
+
+.functions {
+    margin-left: 10px;
+    margin-top: 10px;
+    height: 170px;
+}
+
+.headline {
+    font-size: 20px;
+    color: rgb(22, 41, 57);
+    margin: 0;
+    padding-top: 10px;
+    font-family: Tahoma;
+    float: left;
+}
+
+.aligncolor {
+    width: 60px;
+    height: 30px;
+    margin-top: 10px;
+    margin-left: 20px;
+    border-radius: 5px;
+    vertical-align: top;
+}
+
+.fill{
+    margin-top: 10px;
+    margin-left: 60px;
+    background-color: rgb(255, 255, 255);
+    font-size: 25px;
+    width: 40px;
+    height: 40px;
+    border: 2px rgb(255, 255, 255) solid;
+    border-radius: 10px;
+    vertical-align: top;
+}
+
+.fill:hover {
+    transform:scale(1.2,1.2);
+    -webkit-transform:scale(1.2,1.2);
+    -moz-transform:scale(1.2,1.2);
+}
+
+.size {
+    width: 150px;
+    height: 10px;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.btnOperations {
+    background-color: rgb(255, 255, 255);
+    font-size: 15px;
+    width: fit-content;
+    height: 45px;
+    margin-left: 5%;
+    margin-top: 5%;
+    vertical-align: top;
+    border: 2px rgb(255, 255, 255) solid;
+    border-radius: 10px;
+    position: relative;
+}
+
+
+
+/*
 .head {
     font-size: 23px;
     margin: 0;
@@ -42,25 +169,7 @@
     float: left;
 }
 
-.aligncolor {
-    width: 60px;
-    height: 30px;
-    margin-top: 1px;
-    margin-left: 1px;
-    border-radius: 5px;
-    vertical-align: top;
-}
 
-.fill{
-    background-color: rgb(255, 255, 255);
-    font-size: 25px;
-    width: 40px;
-    height: 40px;
-    border: 2px rgb(255, 255, 255) solid;
-    border-radius: 10px;
-    margin-left: 10px;
-    vertical-align: top;
-}
 
 .size {
     margin-top: 10px;
@@ -77,151 +186,7 @@
     position: relative;
 }
 
-.rectangle {
-    background-color: rgb(255, 255, 255);
-    font-size: 30px;
-    width: 45px;
-    height: 45px;
-    margin-left: 25px;
-    border: 2px rgb(255, 255, 255) solid;
-    border-radius: 10px;
-    position: fixed;
-}
-
-.circle {
-    background-color: rgb(255, 255, 255);
-    font-size: 25px;
-    width: 45px;
-    height: 45px;
-    margin-left: 85px;
-    border: 2px rgb(255, 255, 255) solid;
-    border-radius: 10px;
-    position: fixed;
-}
-
-.square {
-    background-color: rgb(255, 255, 255);
-    font-size: 20px;
-    width: 45px;
-    height: 45px;
-    margin-left: 145px;
-    border: 2px rgb(255, 255, 255) solid;
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-}
-
-.polygon {
-    background-color: rgb(255, 255, 255);
-    font-size: 30px;
-    width: 45px;
-    height: 45px;
-    margin-left: 15px;
-    border: 2px rgb(255, 255, 255) solid;
-    border-radius: 10px;
-    overflow: hidden;
-    position: fixed;
-} 
-
-.ellipse {
-    background-color: #ffffff;
-    font-size: 30px;
-    width: 45px;
-    height: 45px;
-    margin-top: 60px;
-    left: 80%;
-    border: 2px rgb(255, 255, 255) solid;
-    border-radius: 10px;
-    overflow: hidden;
-    position: fixed;
-} 
-
-.triangle {
-    background-color: rgb(255, 255, 255);
-    font-size: 30px;
-    width: 45px;
-    height: 45px;
-    margin-top: 60px;
-    left: 83.9%;
-    border: 2px rgb(255, 255, 255) solid;
-    border-radius: 10px;
-    overflow: hidden;
-    position: fixed;
-} 
-
-.line {
-    background-color: rgb(255, 255, 255);
-    font-size: 25px;
-    width: 45px;
-    height: 45px;
-    margin-top: 60px;
-    left: 87.8%;
-    border: 2px rgb(255, 255, 255) solid;
-    border-radius: 10px;
-    overflow: hidden;
-    position: fixed;
-} 
-
-.freeHand {
-    background-color: rgb(255, 255, 255);
-    font-size: 25px;
-    width: 45px;
-    height: 45px;
-    margin-top: 60px;
-    left: 91.7%;
-    border: 2px rgb(255, 255, 255) solid;
-    border-radius: 10px;
-    overflow: hidden;
-    position: fixed;
-} 
-
-.rectangle:hover {
-    transform:scale(1.2,1.2);
-    -webkit-transform:scale(1.2,1.2);
-    -moz-transform:scale(1.2,1.2);
-}
-
-.circle:hover {
-    transform:scale(1.2,1.2);
-    -webkit-transform:scale(1.2,1.2);
-    -moz-transform:scale(1.2,1.2);
-}
-
-.square:hover {
-    transform:scale(1.2,1.2);
-    -webkit-transform:scale(1.2,1.2);
-    -moz-transform:scale(1.2,1.2);
-}
-
-.polygon:hover {
-    transform:scale(1.2,1.2);
-    -webkit-transform:scale(1.2,1.2);
-    -moz-transform:scale(1.2,1.2);
-}
-
-.ellipse:hover {
-    transform:scale(1.2,1.2);
-    -webkit-transform:scale(1.2,1.2);
-    -moz-transform:scale(1.2,1.2);
-}
-
-.triangle:hover {
-    transform:scale(1.2,1.2);
-    -webkit-transform:scale(1.2,1.2);
-    -moz-transform:scale(1.2,1.2);
-}
-
-.line:hover {
-    transform:scale(1.2,1.2);
-    -webkit-transform:scale(1.2,1.2);
-    -moz-transform:scale(1.2,1.2);
-}
-
-.freeHand:hover {
-    transform:scale(1.2,1.2);
-    -webkit-transform:scale(1.2,1.2);
-    -moz-transform:scale(1.2,1.2);
-}
+*/
 
 
 
@@ -229,3 +194,4 @@
 
 
 
+ 
