@@ -27,8 +27,8 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
 
-    let width = 1210;
-    let height = 700;
+    let width = window.innerWidth * (80 / 100);
+    let height = window.innerHeight * (95 / 100);
     this.stage = new Konva.Stage({
       container: 'board',
       width: width,
@@ -399,7 +399,7 @@ export class AppComponent implements OnInit{
     }
   } 
 
-  
+
   public copy(event : any) {
       this.changeState(event);
 
