@@ -8,7 +8,7 @@ import {Observable} from 'rxjs';
 
 export class ShapeService {
 
-  private shapeURL = 'http://localhost:8080/api/';
+  private shapeURL = 'http://localhost:9090/api/';
 
   constructor(private http: HttpClient) {
   }
@@ -29,8 +29,17 @@ export class ShapeService {
     return this.http.post<any>(this.shapeURL + "Copy", data);
   }
 
-  public deleteShape(data: any) {
+  public deleteShape(data: string) {
     this.http.post<any>(this.shapeURL + "Delete", data).subscribe();
+  }
+
+  public save(stage: any, type: any) {
+    this.http.post(this.shapeURL + "Save",
+      {
+        jsonStage: stage,
+        fileType: type
+      }
+    ).subscribe();
   }
 
   public undo(): Observable<any> {
@@ -44,5 +53,6 @@ export class ShapeService {
   public clear() {
     this.http.get<any>(this.shapeURL + "Clear").subscribe();
   }
+
 
 }

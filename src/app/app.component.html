@@ -27,24 +27,22 @@
 
             <p class="headline">Change scale:</p>
             <input [(ngModel)]="size" class="size" type="range" min="1" max="100" value="5" >
-
         </div>
-
     </div>
     <div class="operations">
         <p class="title">Operations</p>
-        <div class="">
-            <button (click)="undo($event)" class="btnOperations">Undo</button>
-            <button (click)="redo($event)" class="btnOperations">Redo</button>
-            <button (click)="copy($event)" class="btnOperations">Copy</button>
-            <button (click)="delete($event)" class="btnOperations">Delete</button>
-            <button (click)="save($event)" class="btnOperations">Save</button>
+        <div class="operationsFunctions">
+            <button (click)="undo()" class="btnOperations">Undo</button>
+            <button (click)="redo()" class="btnOperations">Redo</button>
+            <button (click)="copy()" class="btnOperations">Copy</button>
+            <button (click)="delete()" class="btnOperations">Delete</button>
+            <!-- <button (click)="save($event)" class="btnOperations">Save</button> -->
             <button (click)="load($event)" class="btnOperations">Load</button>
         </div>
     </div>
     <div class="clearOperation">
         <button class="clear">Clear</button>
-    </div> 
+    </div>
 </div>
 
 

@@ -24,6 +24,7 @@ export class AppComponent implements OnInit {
   colorEvent: any;
   color: string = "black";
   size = 5;
+  selectedShape : any;
   log = console.log;
 
   constructor(private service: ShapeService) {}
@@ -44,14 +45,16 @@ export class AppComponent implements OnInit {
 
     this.stage.on("click", (event: any) => {
       if (this.currentSelector !== "screen") {
+        this.selectedShape = null;
         return;
       }
       this.layer.getChildren().forEach(function (node: any) {
         node.draggable(false);
       });
       let id = event.target.attrs.id;
-      console.log("click triggered");
-      console.log("id of selected shape = " + id);
+      this.selectedShape = event.target;
+      // console.log("click triggered");
+      // console.log("id of selected shape = " + id);
       if (id != undefined) {
         let shape = event.target;
         this.transform.nodes([shape]);
@@ -182,6 +185,7 @@ export class AppComponent implements OnInit {
       console.log(shape.toJSON());
       this.generateID(shape);
       console.log("Done initializing " + type);
+      console.log("color is " + shape.stroke())
     });
 
   }
@@ -239,6 +243,7 @@ export class AppComponent implements OnInit {
 
     this.stage.on("mouseup", () => {
         isNowDrawing = false;
+        line.setAttr('type', "LineSegment");
         this.generateID(line);
         console.log("Done initializing FreeHand");
     });
@@ -297,6 +302,7 @@ export class AppComponent implements OnInit {
 
     this.stage.on("mouseup", () => {
       isNowDrawing = false;
+      line.setAttr('type', "LineSegment");
       this.generateID(line);
       console.log("Done initialzing Line")
     });
@@ -332,7 +338,9 @@ export class AppComponent implements OnInit {
     this.stage.off('mousedown mouseup mousemove');
     this.stage.on("mousedown", (event: any) => {
       event.target.fill(this.color);
-    })
+      let shape = event.target;
+      this.service.updateShape(shape.toJSON());
+    });
   }
 
   public changeState(event: any) {
@@ -356,42 +364,89 @@ export class AppComponent implements OnInit {
   }
 
 
-  public copy(event: any) {
-    this.changeState(event);
-
-
+  public copy() {
+   if(this.selectedShape !== null) {
+     let newShape  = this.selectedShape.clone();
+     this.service.copyShape(this.selectedShape.id()).subscribe(responseData =>{
+       newShape.id(responseData['id']);
+       console.log("first shape" + this.selectedShape.id());
+       console.log("second shape" + newShape.id());
+       this.selectedShape = newShape;
+       this.layer.add(newShape).batchDraw();
+       this.transform.nodes([newShape]);
+     });
+   }
   }
 
-  public delete(event: any) {
-    this.changeState(event);
-
-
+  public delete() {
+    if(this.selectedShape !== null) {
+      let shape = this.selectedShape;
+      this.service.deleteShape(shape.id());
+      shape.destroy();
+      this.transform.nodes([]);
+      this.selectedShape = null;
+    }
   }
 
-  public undo(event: any) {
-    this.changeState(event);
-
-
+  public undo() {
+    this.service.undo().subscribe(responseData =>{
+      let tempShape = responseData['shapes'];
+      let operation = responseData['operation'];
+      let arr = <Array<any>>tempShape;
+      arr.forEach( (shape) => {
+        console.log(operation);
+        this.processOperation(operation,shape);
+      });
+    })
   }
 
-  public redo(event: any) {
-    this.changeState(event);
-
-
+  public redo() {
+    this.service.redo().subscribe(responseData =>{
+      let tempShape = responseData['shapes'];
+      let operation = responseData['operation'];
+      let arr = <Array<any>>tempShape;
+      arr.forEach( (shape) => {
+        console.log(operation);
+        this.processOperation(operation,shape);
+      });
+    })
   }
 
-  public save(event: any) {
-    this.changeState(event);
-
-
-  }
+  // public save(event: any) {
+  //   this.changeState(event);
+  //   this.service.save(this.stage.toJSON(),'JSON');
+  //   console.log("done");
+  // }
 
   public load(event: any) {
-    this.changeState(event);
-
 
   }
 
+  public processOperation(type : string, shape : any) {
+
+    if(type === "CREATE") {
+      let kind = shape['type'];
+      this.layer.add(this.getObject(kind,shape)).batchDraw();
+    }
+    else if(type === "UPDATE") {
+      let id = shape['id'];
+      let op = this.stage.findOne("#" + id.toString());
+      op.destroy();
+      this.transform.nodes([]);
+      let draw = this.getObject(shape['type'],shape);
+      this.transform.nodes([draw]);
+      this.layer.add(draw).batchDraw();
+    }
+    else if(type === "DELETE") {
+      let id = shape['id'];
+      console.log(id);
+      let op = this.stage.findOne("#" + id.toString());
+      console.log(op);
+      op.destroy();
+    }
+
+
+  }
 
   //get type
   public getType(event: any) {
@@ -419,6 +474,32 @@ export class AppComponent implements OnInit {
         break;
     }
     return type;
+  }
+
+
+  public getObject(type : string, shape : any) {
+    let choosenShape: any;
+    switch (type) {
+      case "Rectangle":
+        choosenShape = new Konva.Rect(shape);
+        break;
+      case "Circle":
+        choosenShape = new Konva.Circle(shape);
+        break;
+      case "Ellipse":
+        choosenShape = new Konva.Ellipse(shape);
+        break;
+      case "Square":
+        choosenShape = new Konva.Rect(shape);
+        break;
+      case "Triangle":
+        choosenShape = new Konva.RegularPolygon(shape);
+        break;
+      case "RegularPolygon":
+        choosenShape = new Konva.RegularPolygon(shape);
+        break;
+    }
+    return choosenShape;
   }
 
   // return shape
