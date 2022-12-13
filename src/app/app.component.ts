@@ -54,10 +54,11 @@ export class AppComponent implements OnInit {
       });
       let id = event.target.attrs.id;
       this.selectedShape = event.target;
-      // console.log("click triggered");
-      // console.log("id of selected shape = " + id);
+      console.log("click triggered");
+      console.log("id of selected shape = " + id);
       if (id != undefined) {
         let shape = event.target;
+        
         this.transform.nodes([shape]);
         shape.draggable(true);
 
@@ -89,11 +90,12 @@ export class AppComponent implements OnInit {
 
   public generateID(shape: any) {
     this.service.createShape(shape.toJSON()).subscribe(responseData => {
+        console.log(responseData);
         shape.id(responseData['id']);
-        console.log(shape.toJSON());
       }
     );
   }
+
 
   public drawShape(event: any) {
 
@@ -183,7 +185,7 @@ export class AppComponent implements OnInit {
     this.stage.on("mouseup", () => {
       isNowDrawing = false;
       shape.setAttr('type', type);
-      console.log(shape.toJSON());
+      // console.log(shape.toJSON());
       this.generateID(shape);
       console.log("Done initializing " + type);
       console.log("color is " + shape.stroke())
@@ -364,7 +366,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-
   public copy() {
     if (this.selectedShape !== null) {
       let newShape = this.selectedShape.clone();
@@ -427,26 +428,33 @@ export class AppComponent implements OnInit {
   public clear() {
     this.service.clear();
     this.layer.removeChildren();
+    this.transform = new Konva.Transformer(); 
+    this.layer.add(this.transform);
+    this.currentSelector = "screen";
   }
 
   public processOperation(type: string, shape: any) {
     if (type === "CREATE") {
       let kind = shape['type'];
       this.layer.add(this.getObject(kind, shape)).batchDraw();
+      this.transform.nodes([]);
     } else if (type === "UPDATE") {
       let id = shape['id'];
       let op = this.stage.findOne("#" + id.toString());
       op.destroy();
       this.layer.add(this.getObject(shape['type'], shape)).batchDraw();
+      this.transform.nodes([]);
       console.log(this.layer);
     } else if (type === "DELETE") {
       let id = shape['id'];
       let op = this.stage.findOne("#" + id.toString());
+      this.transform.nodes([]);
       op.remove();
       op.destroy();
       console.log(op);
     } else if(type === "CLEAR") {
       this.clear();
+      this.transform.nodes([]);
     }
   }
 
@@ -488,6 +496,7 @@ export class AppComponent implements OnInit {
 
 
   }
+
   public download(response:any){
     let link = document.createElement('a');
     link.download = response.name;
@@ -498,6 +507,10 @@ export class AppComponent implements OnInit {
     document.body.removeChild(link);
   }
 
+
+  public delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
 
   public load(event:any){
     this.changeState(event);
@@ -511,13 +524,14 @@ export class AppComponent implements OnInit {
 
         this.service.load(this.currentFile).subscribe(responseData=>{
           let x=responseData['children'];
-          let y=x['0'];
+          let y = x['0'];
           let z = y['children'];
           let arr = <Array<any>>z;
           for(let i=0;i<arr.length;i++) {
             if(i === 0) continue;
             let shape = arr[i]['attrs'];
-            this.processOperation("CREATE",shape);
+            this.delay(100);
+            this.processOperationLoad(shape);
           }
       
         });
@@ -525,6 +539,15 @@ export class AppComponent implements OnInit {
 
       this.selectedFiles = undefined;
     }
+  }
+
+  public processOperationLoad(shape: any) {
+    let kind = shape['type'];
+    let x = this.getObject(kind,shape);
+    console.log(x);
+    this.generateID(x);
+    this.layer.add(x).batchDraw();
+    this.transform.nodes([]);
   }
 
   public getObject(type: string, shape: any) {
