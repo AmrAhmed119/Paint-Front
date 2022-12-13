@@ -1,11 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {KonvaModule} from "ng2-konva";
-import {KonvaComponent} from "ng2-konva";
 import {Konva} from "konva/cmj/_FullInternals";
-import {Layer} from 'konva/cmj/Layer';
-import {max} from 'rxjs';
 import {ShapeService} from './shape-service.service';
-import {compareSegments} from "@angular/compiler-cli/src/ngtsc/sourcemaps/src/segment_marker";
+
 
 @Component({
   selector: 'app-root',
@@ -24,8 +20,13 @@ export class AppComponent implements OnInit {
   colorEvent: any;
   color: string = "black";
   size = 5;
-  selectedShape : any;
+  selectedShape: any;
   log = console.log;
+  selectedFiles?: FileList;
+  currentFile?: File;
+  message = '';
+  filename="";
+  saveclicked=false;
 
   constructor(private service: ShapeService) {}
 
@@ -71,11 +72,11 @@ export class AppComponent implements OnInit {
           console.log('transform' + shape);
         });
 
-        shape.on('transformend',()=> {
+        shape.on('transformend', () => {
           this.service.updateShape(shape.toJSON());
         });
 
-        shape.on('dragend',()=> {
+        shape.on('dragend', () => {
           this.service.updateShape(shape.toJSON());
         });
 
@@ -242,10 +243,10 @@ export class AppComponent implements OnInit {
     });
 
     this.stage.on("mouseup", () => {
-        isNowDrawing = false;
-        line.setAttr('type', "LineSegment");
-        this.generateID(line);
-        console.log("Done initializing FreeHand");
+      isNowDrawing = false;
+      line.setAttr('type', "LineSegment");
+      this.generateID(line);
+      console.log("Done initializing FreeHand");
     });
 
   }
@@ -365,21 +366,21 @@ export class AppComponent implements OnInit {
 
 
   public copy() {
-   if(this.selectedShape !== null) {
-     let newShape  = this.selectedShape.clone();
-     this.service.copyShape(this.selectedShape.id()).subscribe(responseData =>{
-       newShape.id(responseData['id']);
-       console.log("first shape" + this.selectedShape.id());
-       console.log("second shape" + newShape.id());
-       this.selectedShape = newShape;
-       this.layer.add(newShape).batchDraw();
-       this.transform.nodes([newShape]);
-     });
-   }
+    if (this.selectedShape !== null) {
+      let newShape = this.selectedShape.clone();
+      this.service.copyShape(this.selectedShape.id()).subscribe(responseData => {
+        newShape.id(responseData['id']);
+        console.log("first shape" + this.selectedShape.id());
+        console.log("second shape" + newShape.id());
+        this.selectedShape = newShape;
+        this.layer.add(newShape).batchDraw();
+        this.transform.nodes([newShape]);
+      });
+    }
   }
 
   public delete() {
-    if(this.selectedShape !== null) {
+    if (this.selectedShape !== null) {
       let shape = this.selectedShape;
       this.service.deleteShape(shape.id());
       shape.destroy();
@@ -389,63 +390,64 @@ export class AppComponent implements OnInit {
   }
 
   public undo() {
-    this.service.undo().subscribe(responseData =>{
+    this.service.undo().subscribe(responseData => {
+      console.log(responseData);
+      if(responseData === null) {
+        console.log("cannot undo");
+        return;
+      }
       let tempShape = responseData['shapes'];
       let operation = responseData['operation'];
       let arr = <Array<any>>tempShape;
-      arr.forEach( (shape) => {
-        console.log(operation);
-        this.processOperation(operation,shape);
+
+      console.log(operation);
+      arr.forEach((shape) => {
+        this.processOperation(operation, shape);
       });
     })
   }
 
   public redo() {
-    this.service.redo().subscribe(responseData =>{
+    this.service.redo().subscribe(responseData => {
+      if(responseData === null) {
+        console.log("cannot redo");
+        return;
+      }
       let tempShape = responseData['shapes'];
       let operation = responseData['operation'];
       let arr = <Array<any>>tempShape;
-      arr.forEach( (shape) => {
-        console.log(operation);
-        this.processOperation(operation,shape);
+      console.log(tempShape);
+      console.log(operation);
+      arr.forEach((shape) => {
+        this.processOperation(operation, shape);
       });
     })
   }
 
-  // public save(event: any) {
-  //   this.changeState(event);
-  //   this.service.save(this.stage.toJSON(),'JSON');
-  //   console.log("done");
-  // }
-
-  public load(event: any) {
-
+  public clear() {
+    this.service.clear();
+    this.layer.removeChildren();
   }
 
-  public processOperation(type : string, shape : any) {
-
-    if(type === "CREATE") {
+  public processOperation(type: string, shape: any) {
+    if (type === "CREATE") {
       let kind = shape['type'];
-      this.layer.add(this.getObject(kind,shape)).batchDraw();
-    }
-    else if(type === "UPDATE") {
+      this.layer.add(this.getObject(kind, shape)).batchDraw();
+    } else if (type === "UPDATE") {
       let id = shape['id'];
       let op = this.stage.findOne("#" + id.toString());
       op.destroy();
-      this.transform.nodes([]);
-      let draw = this.getObject(shape['type'],shape);
-      this.transform.nodes([draw]);
-      this.layer.add(draw).batchDraw();
-    }
-    else if(type === "DELETE") {
+      this.layer.add(this.getObject(shape['type'], shape)).batchDraw();
+      console.log(this.layer);
+    } else if (type === "DELETE") {
       let id = shape['id'];
-      console.log(id);
       let op = this.stage.findOne("#" + id.toString());
+      op.remove();
+      op.destroy();
       console.log(op);
-      op.destroy();
+    } else if(type === "CLEAR") {
+      this.clear();
     }
-
-
   }
 
   //get type
@@ -476,8 +478,56 @@ export class AppComponent implements OnInit {
     return type;
   }
 
+  public save(event: any) {
+    this.changeState(event);
+    console.log(this.stage.toJSON());
+    this.service.save(this.stage.toJSON(),"JSON",this.filename).subscribe(response=>{
+      this.download(response);
+    });
+    console.log("done");
 
-  public getObject(type : string, shape : any) {
+
+  }
+  public download(response:any){
+    let link = document.createElement('a');
+    link.download = response.name;
+    console.log(response.url);
+    link.href = response.url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+
+  public load(event:any){
+    this.changeState(event);
+    this.currentSelector = "screen";
+    this.selectedFiles = event.target.files;
+    if (this.selectedFiles) {
+      const file: File | null = this.selectedFiles.item(0);
+
+      if (file) {
+        this.currentFile = file;
+
+        this.service.load(this.currentFile).subscribe(responseData=>{
+          let x=responseData['children'];
+          let y=x['0'];
+          let z = y['children'];
+          let arr = <Array<any>>z;
+          for(let i=0;i<arr.length;i++) {
+            if(i === 0) continue;
+            let shape = arr[i]['attrs'];
+            this.processOperation("CREATE",shape);
+          }
+      
+        });
+      }
+
+      this.selectedFiles = undefined;
+    }
+  }
+
+  public getObject(type: string, shape: any) {
     let choosenShape: any;
     switch (type) {
       case "Rectangle":
@@ -491,6 +541,9 @@ export class AppComponent implements OnInit {
         break;
       case "Square":
         choosenShape = new Konva.Rect(shape);
+        break;
+      case "LineSegment":
+        choosenShape = new Konva.Line(shape);
         break;
       case "Triangle":
         choosenShape = new Konva.RegularPolygon(shape);

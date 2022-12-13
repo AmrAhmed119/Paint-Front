@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpEvent} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 
@@ -33,13 +33,20 @@ export class ShapeService {
     this.http.post<any>(this.shapeURL + "Delete", data).subscribe();
   }
 
-  public save(stage: any, type: any) {
-    this.http.post(this.shapeURL + "Save",
-      {
-        jsonStage: stage,
-        fileType: type
-      }
-    ).subscribe();
+  public save(stage: any, type: any, filename: any): Observable<any> {
+    return this.http.post<any>(this.shapeURL + "Save", {
+      jsonStage: stage,
+      fileType: type,
+      fileName: filename
+    });
+  }
+
+  public load(file: File): Observable<any> {
+    const formData: FormData = new FormData();
+
+    formData.append('file', file);
+
+    return this.http.post<any>(this.shapeURL + "Load", formData);
   }
 
   public undo(): Observable<any> {
