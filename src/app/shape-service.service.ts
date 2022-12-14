@@ -61,5 +61,8 @@ export class ShapeService {
     this.http.get<any>(this.shapeURL + "Clear").subscribe();
   }
 
+  public refresh(): Observable<any>{
+    return this.http.get<any>(this.shapeURL + "Refresh");
+  }
 
 }

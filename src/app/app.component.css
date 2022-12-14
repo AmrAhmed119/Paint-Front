@@ -3,15 +3,16 @@
     margin-top: 0.5%;
     border: 2px solid rgba(31, 48, 65, 0.69);
     border-radius: 20px;
+    background-color: rgb(229, 234, 238);
     position: absolute;
 }
 
 .options {
-    margin-top: 0.5%;
-    margin-left: 82%;
+    margin-top: 0%;
+    margin-left: 82.5%;
     width: 16.5%;
     height: 95%;
-    border: 2px solid rgba(31, 48, 65, 0.69);
+    /* border: 2px solid rgba(31, 48, 65, 0.69); */
     position: absolute;
     display:inline-block;
     border-radius: 20px;
@@ -21,15 +22,16 @@
     background-color: rgba(28, 47, 64, 0.318);
     margin-left: 10px;
     height: 180px;
-    width: 230px;
+    width: 240px;
     border-radius: 20px;
 }
 
 .colors {
     background-color: rgba(28, 47, 64, 0.318);
+    margin-top: 10px;
     margin-left: 10px;
-    height: 220px;
-    width: 230px;
+    height: 250px;
+    width: 240px;
     border-radius: 20px;
 }
 
@@ -37,24 +39,51 @@
     background-color: rgba(28, 47, 64, 0.318);
     margin-left: 10px;
     margin-top: 8px;
-    height: 190px;
-    width: 230px;
+    height: 200px;
+    width: 240px;
     border-radius: 20px;
-}
-
-.clearOperation {
-    text-align: center;
 }
 
 .clear {
-    background-color: rgba(28, 47, 64, 0.318);
-    margin-left: 0px;
-    margin-top: 8px;
+    background-color: rgb(255, 255, 255);
     font-size: 30px;
+    color: rgb(245, 139, 139);
+    margin-left: 10px;
+    margin-top: 8px;
     height: 50px;
-    width: 220px;
+    width: 230px;
     border: none;
     border-radius: 20px;
+}
+
+.title1 {
+    margin-left: 20px;
+    font-size: 30px;
+    font-family: Tahoma;
+    word-spacing: 50px;
+}
+
+.title3 {
+    font-family: Tahoma;
+    padding-left: 4px;
+}
+
+.title4 {
+    word-spacing: 35px;
+    
+}
+
+.btn {
+    background-color: rgb(255, 255, 255);
+    font-size: 15px;
+    width: fit-content;
+    height: 45px;
+    margin-left: 12%;
+    margin-top: 5%;
+    vertical-align: top;
+    border: 2px rgb(255, 255, 255) solid;
+    border-radius: 10px;
+    position: relative;
 }
 
 .title {
@@ -72,17 +101,27 @@
     height: 115px;
 }
 
+.txt {
+    font-size: 25px;
+    font-family: Tahoma;
+}
+
+
 .button {
     background-color: rgb(255, 255, 255);
     font-size: 30px;
     width: 45px;
     height: 45px;
-    margin-left: 4%;
+    margin-left: 5%;
     margin-top: 5%;
     vertical-align: top;
     border: 2px rgb(255, 255, 255) solid;
     border-radius: 10px;
     position: relative;
+}
+
+.circle {
+    font-size: 25px;
 }
 
 .square {
@@ -95,37 +134,47 @@
     -moz-transform:scale(1.2,1.2);
 }
 
+.operationsFunctions {
+    margin-left: 0px;
+    margin-top: 0px;
+    height: 150px;
+    border: 2px red solid;
+}
+
 .functions {
     margin-left: 10px;
     margin-top: 10px;
     height: 170px;
+    
 }
 
 .headline {
     font-size: 20px;
     color: rgb(22, 41, 57);
     margin: 0;
-    padding-top: 10px;
+    padding-top: 0px;
     font-family: Tahoma;
     float: left;
 }
 
 .aligncolor {
-    width: 60px;
+    width: 75px;
     height: 30px;
-    margin-top: 10px;
+    margin-top: 9px;
     margin-left: 20px;
     border-radius: 5px;
     vertical-align: top;
 }
 
+
+
 .fill{
-    margin-top: 10px;
+    margin-top: 5px;
     margin-left: 60px;
     background-color: rgb(255, 255, 255);
     font-size: 25px;
     width: 40px;
-    height: 40px;
+    height: 36px;
     border: 2px rgb(255, 255, 255) solid;
     border-radius: 10px;
     vertical-align: top;
@@ -167,39 +216,53 @@
   background-color: #62666846;
 }
 
+.clear:hover {
+  transform:scale(1.1,1.1);
+  -webkit-transform:scale(1.1,1.1);
+  -moz-transform:scale(1.1,1.1);
+}
 
+.clear:active{
+  background-color: #62666846;
+}
+.btn:hover {
+  transform:scale(1.1,1.1);
+  -webkit-transform:scale(1.1,1.1);
+  -moz-transform:scale(1.1,1.1);
+}
 
-/*
-.head {
-    font-size: 23px;
-    margin: 0;
-    padding-left: 10px;
-    padding-right: 30px;
+.btn:active{
+  background-color: #62666846;
+}
+
+.popScreen {
+    position: absolute;
+    bottom: 0px;
+    width: 300px;
+    height: 270px;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.popup {
+    width: 100%;
+    height: 25%;
+    font-size: 20px;
+    border: none;
+}
+
+.loadfile {
+    padding-top: 8px;
+    padding-left: 80px;
     font-family: Tahoma;
-    float: left;
+    font-size: 20px;
+    width: 120px;
+    height: 25px;
 }
 
-
-
-.size {
-    margin-top: 10px;
-    margin-left: 20px;
+.popup:hover{
+    background-color: rgba(121, 115, 115, 0.775);
 }
-
-.text {
-    color: rgb(22, 41, 57);
-    padding-left: 25px;
-    margin-top: 10px;
-    margin-bottom: 25px;
-    font-size: 35px;
-    font-family: Tahoma;
-    position: relative;
-}
-
-*/
-
-
-
 
 
 
